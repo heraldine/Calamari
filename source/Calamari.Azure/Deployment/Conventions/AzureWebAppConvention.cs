@@ -28,6 +28,12 @@ namespace Calamari.Azure.Deployment.Conventions
 
             var publishProfile = GetPublishProfile(variables);
 
+            if (deployment.Variables.GetFlag("AllowUntrustedCertificate"))
+            {
+                Log.Info("Bypassing SSL validation check");
+                System.Net.ServicePointManager.ServerCertificateValidationCallback = (senderX, certificate, chain, sslPolicyErrors) => true;
+            }
+
             var retry = GetRetryTracker();
 
             while (retry.Try())
